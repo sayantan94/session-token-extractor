@@ -1,7 +1,8 @@
 import json
 import time
+import os
 from playwright.sync_api import sync_playwright
-from constants import WEBSITE_URL, WEBSITE_USERNAME, WEBSITE_PASSWORD
+from constants import WEBSITE_URL, WEBSITE_USERNAME, WEBSITE_PASSWORD, CONFIG_FILE_PATH, CONFIG_FILE_TYPE, CONFIG_TOKEN_KEY
 
 class WebsiteLoginAutomation:
     def __init__(self, login_url, headless=True):
@@ -226,8 +227,41 @@ class WebsiteLoginAutomation:
             json.dump(tokens, f, indent=2)
         print(f"Tokens saved to {filename}")
 
+    def update_config_file(self, token_value, config_path=CONFIG_FILE_PATH, token_key=CONFIG_TOKEN_KEY):
+        """
+        Update configuration file with the session token
+        
+        Args:
+            token_value: The session token value to update
+            config_path: Path to the configuration file
+            token_key: Key name for the token in the config file
+        """
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(os.path.dirname(config_path), exist_ok=True)
+            
+            # Read existing config or create new one
+            if os.path.exists(config_path):
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+            else:
+                config = {}
+            print(config)
+            # Update the token
+            config[token_key] = token_value
+            
+            # Write back to file
+            with open(config_path, 'w') as f:
+                json.dump(config, f, indent=2)
+            
+            print(f"Updated {token_key} in {config_path}")
+            
+        except Exception as e:
+            print(f"Error updating config file: {e}")
+            raise
 
-# Example usage
+
+
 if __name__ == "__main__":
     # Initialize automation
     automation = WebsiteLoginAutomation(
@@ -245,18 +279,7 @@ if __name__ == "__main__":
             wait_after_login=None  # Let it wait for network idle
         )
 
-        # Save all tokens to file
-        automation.save_tokens_to_file(tokens)
-
-        # Find and display session token
-        session_token = automation.find_session_token(tokens)
-        if session_token:
-            print(f"\nFound session token!")
-            print(f"Type: {session_token['type']}")
-            print(f"Name: {session_token['name']}")
-            print(f"Value: {session_token['value']}")
-        else:
-            print("\nNo obvious session token found. Check extracted_tokens.json for all data.")
+        automation.update_config_file(tokens['sessionStorage']['token'])
 
         # Pretty print all tokens
         print("\n=== All Extracted Tokens ===")

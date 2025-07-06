@@ -1,0 +1,8 @@
+WEBSITE_URL = 'https://example.com/login'
+WEBSITE_USERNAME = 'your_username'
+WEBSITE_PASSWORD = 'your_password'
+
+# Configuration file settings
+CONFIG_FILE_PATH = '/etc/config/TradingInsightsAgentConfig.json'
+CONFIG_FILE_TYPE = 'json'
+CONFIG_TOKEN_KEY = 'PRISM_API_TOKEN'
