@@ -1,5 +1,7 @@
 # Session Token Extractor
 
+![Python](https://img.shields.io/badge/python-3.7+-blue.svg)
+
 A Python tool for extracting session tokens and authentication data from web applications using Playwright automation.
 
 ## Features
